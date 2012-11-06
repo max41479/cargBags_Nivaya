@@ -250,6 +250,7 @@ function MyContainer:OnCreate(name, settings)
     background:SetFrameLevel(1)
 	background:SetPoint("TOPLEFT", -6, 6)
 	background:SetPoint("BOTTOMRIGHT", 3, -3)
+	T.CreateShadow(background)
 
 	-- Caption and close button
 	local caption = background:CreateFontString(background, "OVERLAY", "GameFontNormal")
