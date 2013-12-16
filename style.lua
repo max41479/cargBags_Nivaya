@@ -564,8 +564,6 @@ function MyContainer:OnCreate(name, settings)
 	background:SetTemplate("Transparent", "Shadow")
 	background:SetFrameStrata("HIGH")
 	background:SetFrameLevel(1)
-	background:SetBackdropColor(color_rb,color_gb,color_bb,alpha_fb)
-	background:SetBackdropBorderColor(0, 0, 0, 1)
 
 	background:SetPoint("TOPLEFT", -4, 4)
 	background:SetPoint("BOTTOMRIGHT", 4, -4)
@@ -759,15 +757,7 @@ function MyContainer:OnCreate(name, settings)
 		local dtNT = _G[self.DropTarget:GetName().."NormalTexture"]
 		if dtNT then dtNT:SetTexture(nil) end
 
-		self.DropTarget.bg = CreateFrame("Frame", nil, self)
-		self.DropTarget.bg:SetAllPoints(self.DropTarget)
-		self.DropTarget.bg:SetBackdrop({
-			bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-			edgeFile = "Interface\\Buttons\\WHITE8x8",
-			tile = false, tileSize = 16, edgeSize = 1,
-		})
-		self.DropTarget.bg:SetBackdropColor(1, 1, 1, 0.1)
-		self.DropTarget.bg:SetBackdropBorderColor(0, 0, 0, 1)
+		self.DropTarget:SetTemplate("Transparent")
 		self.DropTarget:SetWidth(itemSlotSize - 1)
 		self.DropTarget:SetHeight(itemSlotSize - 1)
 

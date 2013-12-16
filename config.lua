@@ -1,8 +1,9 @@
 local addon, ns = ...
+local T, C = unpack(ShestakUI)
 ns.options = {
 
-itemSlotSize = 27,		-- Size of item slots
-itemSlotPadding = 2,	-- Gap between item slots
+itemSlotSize = C.bag.button_size,		-- Size of item slots
+itemSlotPadding = C.bag.button_space,	-- Gap between item slots
 
 bagsShownAtStartup = false,		-- Show Bags (Toggle Bags) by default
 
