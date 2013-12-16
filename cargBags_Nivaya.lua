@@ -99,7 +99,7 @@ do	--Replacement for UIDropDownMenu
 
 	function f:UpdatePosition(frame, point, relativepoint, ofsX, ofsY)
 
-		point, relativepoint, ofsX, ofsY = point or "TOPLEFT", relativepoint or "BOTTOMLEFT", ofsX or 0, ofsY or 0
+		point, relativepoint, ofsX, ofsY = point or "BOTTOMRIGHT", relativepoint or "BOTTOMRIGHT", ofsX or -21, ofsY or 157
 
 		self:ClearAllPoints()
 		self:SetPoint(point, frame, relativepoint, ofsX, ofsY)
@@ -281,7 +281,7 @@ function cargBags_Nivaya:ADDON_LOADED(event, addon)
 	cB_Bags.main		:SetMultipleFilters(true, cB_Filters.fBags, cB_Filters.fHideEmpty)
 	for _,v in pairs(cB_CustomBags) do cB_Bags[v.name]:SetExtendedFilter(cB_Filters.fItemClass, v.name) end
 
-	cB_Bags.main:SetPoint("BOTTOMRIGHT", Minimap, "TOPRIGHT", 1, 7)
+	cB_Bags.main:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT", -21, 157)
 	cB_Bags.bank:SetPoint("LEFT", UIParent, "LEFT", 23, 151)
 
 	cbNivaya:CreateAnchors()
