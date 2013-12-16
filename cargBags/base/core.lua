@@ -18,7 +18,6 @@
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	class-generation, helper-functions and the Blizzard-replacement.
 ]]
-
 local parent, ns = ...
 local global = GetAddOnMetadata(parent, 'X-cargBags')
 
@@ -72,8 +71,8 @@ end
 
 local function toggleBag(forceopen)	cargBags.blizzard:Toggle(forceopen)	end
 local function toggleNoForce()		cargBags.blizzard:Toggle()			end
-local function openBag()			cargBags.blizzard:Show()			end
-local function closeBag()			cargBags.blizzard:Hide()			end
+local function openBag()				cargBags.blizzard:Show()			end
+local function closeBag()				cargBags.blizzard:Hide()			end
 
 --- Overwrites Blizzards Bag-Toggle-Functions with the implementation's ones
 --  @param name <string> The name of the implementation [optional]
@@ -82,11 +81,12 @@ function cargBags:ReplaceBlizzard(name)
 	self.blizzard = impl
 
 	-- Can we maybe live without hooking ToggleBag(id)?
-	ToggleBackpack = toggleNoForce
-	ToggleBag = toggleNoForce
 	ToggleAllBags = toggleNoForce
+	ToggleBag = toggleNoForce
+	ToggleBackpack = toggleNoForce
+
 	OpenAllBags = toggleBag	-- Name is misleading, Blizz-function actually toggles bags
-	OpenBackpack = openBag -- Blizz does not provide toggling here
+	OpenBackpack = toggleBag -- Blizz does not provide toggling here
 	CloseAllBags = closeBag
 	CloseBackpack = closeBag
 

@@ -24,6 +24,8 @@ DESCRIPTION
 	Supported tags:
 		space - specify a formatstring as arg #1, using "free" / "max" / "used"
 		item - count of the item in arg #1 (itemID, itemLink, itemName)
+			shards - "sub-tag" of item, displays soul shard info
+		ammo - count of ammo slot
 		currency - displays the currency with id arg #1
 			currencies - displays all tracked currencies
 		money - formatted money display
@@ -47,7 +49,7 @@ local function tagger(tag, ...) return object.tags[tag] and object.tags[tag](obj
 local function updater(self, event)
 	object = self
 	self:SetText(self.tagString:gsub("%[([^%]:]+):?(.-)%]", tagger))
-
+	
 	if(self.OnTagUpdate) then self:OnTagUpdate(event) end
 end
 
@@ -72,6 +74,7 @@ cargBags:RegisterPlugin("TagDisplay", function(self, tagString, parent)
 	plugin.tags = tagPool
 	plugin.tagEvents = tagEvents
 	plugin.iconValues = "16:16:0:0"
+	plugin.forceEvent = function(event) updater(plugin, event) end
 
 	setTagString(plugin, tagString)
 
@@ -112,13 +115,7 @@ tagPool["item"] = function(self, item)
 end
 
 tagPool["currency"] = function(self, id)
-	local name, count, type, icon = GetBackpackCurrencyInfo(id)
-
-	if(type == 1) then
-		icon = "Interface\\PVPFrame\\PVP-ArenaPoints-Icon"
-	elseif(type == 2) then
-		icon = "Interface\\PVPFrame\\PVP-Currency-"..UnitFactionGroup("player")
-	end
+	local name, count, icon, itemid = GetBackpackCurrencyInfo(id)
 
 	if(count) then
 		return count .. createIcon(icon, self.iconValues)
@@ -144,9 +141,15 @@ tagPool["money"] = function(self)
 
 	local g,s,c = floor(money/1e4), floor(money/100) % 100, money % 100
 
-	if(g > 0) then str = (str and str.." " or "") .. g .. createIcon("Interface\\MoneyFrame\\UI-GoldIcon", self.iconValues) end
-	if(s > 0) then str = (str and str.." " or "") .. s .. createIcon("Interface\\MoneyFrame\\UI-SilverIcon", self.iconValues) end
-	if(c > 0) then str = (str and str.." " or "") .. c .. createIcon("Interface\\MoneyFrame\\UI-CopperIcon", self.iconValues) end
+	if ns.options.currencyIcons then
+		if(g > 0) then str = (str and str.." " or "") .. g .. createIcon("Interface\\MoneyFrame\\UI-GoldIcon", self.iconValues) end
+		if(s > 0) then str = (str and str.." " or "") .. s .. createIcon("Interface\\MoneyFrame\\UI-SilverIcon", self.iconValues) end
+		if(c > 0) then str = (str and str.." " or "") .. c .. createIcon("Interface\\MoneyFrame\\UI-CopperIcon", self.iconValues) end
+	else
+		if(g > 0) then str = (str and str.." " or "") .. g .. "|cffffd700"..GOLD_AMOUNT_SYMBOL.."|r" end
+		if(s > 0) then str = (str and str.." " or "") .. s .. "|cffc7c7cf"..SILVER_AMOUNT_SYMBOL.."|r" end
+		if(c > 0) then str = (str and str.." " or "") .. c .. "|cffeda55f"..COPPER_AMOUNT_SYMBOL.."|r" end
+	end
 	return str
 end
 tagEvents["money"] = { "PLAYER_MONEY" }

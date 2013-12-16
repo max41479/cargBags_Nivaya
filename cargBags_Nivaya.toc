@@ -1,11 +1,13 @@
-## Interface: 50001
-## Title: cargBags_Nivaya
-## Author: Luzzifus
-## Version: r41
+## Interface: 50400
+## Title: cargBags_Nivaya: |cff00ffb0MoP|r
+## Author: Luzzifus (Modified by Nibelheim, humfras)
 ## RequiredDeps: DarkShestakUI
-## OptionalDeps: ItemRack, Outfitter
+## OptionalDeps: nibRealUI, ItemRack, Outfitter
 ## SavedVariables: cBnivCfg, cB_CustomBags, cBniv_CatInfo
 ## SavedVariablesPerCharacter: cB_KnownItems, cBniv
+## Version: 1.6
+
+config.lua
 
 cargBags\embed.xml
 localization.lua

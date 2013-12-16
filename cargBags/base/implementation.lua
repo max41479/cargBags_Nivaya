@@ -17,7 +17,7 @@
 	along with cargBags; if not, write to the Free Software
 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 ]]
-local _, ns = ...
+local addon, ns = ...
 local cargBags = ns.cargBags
 
 --[[!
@@ -30,6 +30,7 @@ Implementation.instances = {}
 Implementation.itemKeys = {}
 
 local toBagSlot = cargBags.ToBagSlot
+local L
 
 --[[!
 	Creates a new instance of the class
@@ -56,7 +57,7 @@ function Implementation:New(name)
 	impl.events = {} -- @property events <table> Holds all event callbacks
 	impl.notInited = true -- @property notInited <bool>
 
-	tinsert(UISpecialFrames, name)
+	tinsert(UISpecialFrames, name) 
 
 	self.instances[name] = impl
 
@@ -69,7 +70,11 @@ end
 ]]
 function Implementation:OnShow()
 	if(self.notInited) then
-		self:Init()
+		if not(InCombatLockdown()) then -- initialization of bags in combat taints the itembuttons within - Lars Norberg
+			self:Init()
+		else
+			return
+		end
 	end
 
 	if(self.OnOpen) then self:OnOpen() end
@@ -228,6 +233,18 @@ end
 ]]
 function Implementation:Init()
 	if(not self.notInited) then return end
+	
+	 -- initialization of bags in combat taints the itembuttons within - Lars Norberg
+	if (InCombatLockdown()) then
+		local L = LibStub("gLocale-1.0"):GetLocale(addon, true)
+		if (L) then
+			UIErrorsFrame:AddMessage(L["Can't initialize bags while engaged in combat."], 1.0, 0.82, 0.0, 1.0)
+			UIErrorsFrame:AddMessage(L["Please exit combat then re-open the bags!"], 1.0, 0.82, 0.0, 1.0)
+		end
+
+		return
+	end
+	
 	self.notInited = nil
 
 	if(self.OnInit) then self:OnInit() end
@@ -294,7 +311,26 @@ function Implementation:GetItemInfo(bagID, slotID, i)
 		i.texture, i.count, i.locked, i.quality, i.readable = GetContainerItemInfo(bagID, slotID)
 		i.cdStart, i.cdFinish, i.cdEnable = GetContainerItemCooldown(bagID, slotID)
 		i.isQuestItem, i.questID, i.questActive = GetContainerItemQuestInfo(bagID, slotID)
-		i.name, i.link, i.rarity, i.level, i.minLevel, i.type, i.subType, i.stackCount, i.equipLoc, i.texture = GetItemInfo(clink)
+		
+		-- *edits by Lars "Goldpaw" Norberg for WoW 5.0.4 (MoP)
+		-- last return value here, "texture", doesn't show for battle pets
+		local texture
+		i.name, i.link, i.rarity, i.level, i.minLevel, i.type, i.subType, i.stackCount, i.equipLoc, texture = GetItemInfo(clink)
+		i.texture = i.texture or texture
+		-- battle pet info must be extracted from the itemlink
+		if (clink:find("battlepet")) then
+			if not(L) then
+				L = cargBags:GetLocalizedTypes()
+			end
+			local data, name = strmatch(clink, "|H(.-)|h(.-)|h")
+			local  _, _, level, rarity, _, _, _, id = strmatch(data, "(%w+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)")
+			i.type = L["Battle Pets"]
+			i.rarity = tonumber(rarity) or 0
+			i.id = tonumber(id) or 0
+			i.name = name
+			i.minLevel = level
+			i.link = clink
+		end
 	end
 	return i
 end

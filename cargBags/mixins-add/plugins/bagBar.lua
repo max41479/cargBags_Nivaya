@@ -34,7 +34,6 @@ CALLBACKS
 
 local addon, ns = ...
 local cargBags = ns.cargBags
-local T, C = unpack(ShestakUI)
 local Implementation = cargBags.classes.Implementation
 
 function Implementation:GetBagButtonClass()
@@ -44,9 +43,9 @@ end
 local BagButton = cargBags:NewClass("BagButton", nil, "CheckButton")
 
 -- Default attributes
-BagButton.checkedTex = [[Interface\AddOns\ShestakUI\Media\Textures\Texture]]
-BagButton.bgTex = [[Interface\Paperdoll\UI-PaperDoll-Slot-Bag]]
-BagButton.itemFadeAlpha = 0.1
+BagButton.checkedTex = [[Interface\AddOns\cargBags_Nivaya\media\BagHighlight]]
+BagButton.bgTex = [[Interface\AddOns\cargBags_Nivaya\media\BagSlot]]
+BagButton.itemFadeAlpha = 0.2
 
 local buttonNum = 0
 function BagButton:Create(bagID)
@@ -64,22 +63,28 @@ function BagButton:Create(bagID)
 	button:RegisterForClicks("anyUp")
 	button:SetCheckedTexture(self.checkedTex, "ADD")
 
-	button:SetSize(C.bag.button_size, C.bag.button_size)
-	button:SetHighlightTexture("")
-	button:SetPushedTexture("")
-	button:SetNormalTexture("")
-	button:SetTemplate("Transparent")
+	button:SetSize(32, 32)
 
 	button.Icon = 		_G[name.."IconTexture"]
 	button.Count = 		_G[name.."Count"]
 	button.Cooldown = 	_G[name.."Cooldown"]
 	button.Quest = 		_G[name.."IconQuestTexture"]
 	button.Border =		_G[name.."NormalTexture"]
-
-	button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	button.Icon:SetPoint("TOPLEFT", 2, -2)
-	button.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	
+	button.bg = CreateFrame("Frame", nil, button)
+	button.bg:SetAllPoints(button)
+	button.bg:SetBackdrop({
+		bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
+		edgeFile = "Interface\\Buttons\\WHITE8x8",
+		tile = false, tileSize = 16, edgeSize = 1,
+	})
+	button.bg:SetBackdropColor(1, 1, 1, 0)
+	button.bg:SetBackdropBorderColor(0, 0, 0, 1)
+	
+	button.Icon:SetTexCoord(.08, .92, .08, .92)
+	button.Icon:SetVertexColor(0.8, 0.8, 0.8)
+	button.Border:SetAlpha(0)
+
 	cargBags.SetScriptHandlers(button, "OnClick", "OnReceiveDrag", "OnEnter", "OnLeave", "OnDragStart")
 
 	if(button.OnCreate) then button:OnCreate(bagID) end

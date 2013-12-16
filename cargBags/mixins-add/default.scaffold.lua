@@ -24,46 +24,107 @@ DESCRIPTION
 DEPENDENCIES
 	mixins/api-common.lua
 ]]
-
 local addon, ns = ...
 local cargBags = ns.cargBags
-local T, C = unpack(ShestakUI)
 
 local function noop() end
 
-local function ItemButton_Scaffold(self)
-	self:SetSize(C.bag.button_size, C.bag.button_size)
-	self:SetHighlightTexture("")
-	self:SetPushedTexture("")
-	self:SetNormalTexture("")
-	self:SetTemplate("Transparent")
+-- Upgrade Level retrieval
+local S_UPGRADE_LEVEL = "^" .. gsub(ITEM_UPGRADE_TOOLTIP_FORMAT, "%%d", "(%%d+)")	-- Search pattern
+local scantip = CreateFrame("GameTooltip", "ItemUpgradeScanTooltip", nil, "GameTooltipTemplate")
+scantip:SetOwner(UIParent, "ANCHOR_NONE")
 
+local function GetItemUpgradeLevel(itemLink)
+	scantip:SetHyperlink(itemLink)
+	for i = 2, scantip:NumLines() do -- Line 1 = name so skip
+		local text = _G["ItemUpgradeScanTooltipTextLeft"..i]:GetText()
+		if text and text ~= "" then
+			local currentUpgradeLevel, maxUpgradeLevel = strmatch(text, S_UPGRADE_LEVEL)
+			if currentUpgradeLevel then
+				return currentUpgradeLevel, maxUpgradeLevel
+			end
+		end
+	end
+end
+
+local function Round(num, idp)
+	local mult = 10^(idp or 0)
+	return math.floor(num * mult + 0.5) / mult
+end
+
+local function retrieveFont()
+	return ns.options.fonts.itemInfo
+end
+
+local ilvlLimits = {
+	normal = 385,
+	uncommon = 437,
+	rare = 463,
+}
+local function GetILVLColor(ilvl)
+	if ilvl >= ilvlLimits.rare then
+		return {GetItemQualityColor(4)}
+	elseif ilvl >= ilvlLimits.uncommon then
+		return {GetItemQualityColor(3)}
+	elseif ilvl >= ilvlLimits.normal then
+		return {GetItemQualityColor(2)}
+	else
+		return {0.8, 0.8, 0.8, "ffd0d0d0"}
+	end
+end
+
+local function ItemColorGradient(perc, ...)
+	if perc >= 1 then
+		return select(select('#', ...) - 2, ...)
+	elseif perc <= 0 then
+		return ...
+	end
+
+	local num = select('#', ...) / 3
+	local segment, relperc = math.modf(perc*(num-1))
+	local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
+
+	return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
+end
+
+local function CreateInfoString(button, position)
+	local font = retrieveFont()
+
+	local str = button:CreateFontString(nil, "OVERLAY")
+	if position == "TOP" then
+		str:SetJustifyH("LEFT")
+		str:SetPoint("TOPLEFT", button, "TOPLEFT", 1.5, -1.5)
+	else
+		str:SetJustifyH("RIGHT")
+		str:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1.5, 1.5)
+	end	
+	str:SetFont(unpack(font))
+
+	return str
+end
+
+local function ItemButton_Scaffold(self)
+	self:SetSize(37, 37)
+	local bordersize = 768/string.match(GetCVar("gxResolution"), "%d+x(%d+)")/(GetCVar("uiScale")*cBnivCfg.scale)
 	local name = self:GetName()
 	self.Icon = _G[name.."IconTexture"]
 	self.Count = _G[name.."Count"]
 	self.Cooldown = _G[name.."Cooldown"]
 	self.Quest = _G[name.."IconQuestTexture"]
-	self.Border = _G[name.."NormalTexture"]
-	
-	self.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	self.Icon:SetPoint("TOPLEFT", 2, -2)
-	self.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
-	
-	self.Count:SetFont(C.media.pixel_font, C.media.pixel_font_size, C.media.pixel_font_style)
-	self.Count:SetPoint("BOTTOMRIGHT", -1, 2)
-	
-	self.Cooldown:SetPoint("TOPLEFT", 2, -2)
-	self.Cooldown:SetPoint("BOTTOMRIGHT", -2, 2)
-	
-	self:HookScript('OnEnter', function()
-		self.oldColor = {self:GetBackdropBorderColor()}
-		self:SetBackdropBorderColor(1, 1, 1)
-	end)
-	self:HookScript('OnLeave', function()
-		self:SetBackdropBorderColor(unpack(self.oldColor))
-	end)
-	
-	self.Quest:SetSize(0.01, 0.01)
+	self.Border = CreateFrame("Frame", nil, self)
+	self.Border:SetPoint("TOPLEFT", self.Icon, 0, 0)
+	self.Border:SetPoint("BOTTOMRIGHT", self.Icon, 0, 0)
+	self.Border:SetBackdrop({
+		-- bgFile = "Interface\\Buttons\\WHITE8x8",
+		edgeFile = "Interface\\Buttons\\WHITE8x8",
+		edgeSize = bordersize,
+	})
+	-- self.Border:SetBackdropColor(0, 0, 0, 0)
+	self.Border:SetBackdropBorderColor(0, 0, 0, 0)
+	self.Border:SetFrameLevel(1)
+
+	self.TopString = CreateInfoString(self, "TOP")
+	self.BottomString = CreateInfoString(self, "BOTTOM")
 end
 
 --[[!
@@ -71,18 +132,10 @@ end
 	@param item <table> The itemTable holding information, see Implementation:GetItemInfo()
 	@callback OnUpdate(item)
 ]]
+local ilvlTypes = {Armor = true, Weapon = true}
 local function ItemButton_Update(self, item)
 	self.Icon:SetTexture(item.texture or self.bgTex)
-
-	if item.questID or item.isQuestItem then
-		self:SetBackdropBorderColor(1, 1, 0, 1)
-	elseif item.rarity and item.rarity > 1 then
-		local r, g, b = GetItemQualityColor(item.rarity)
-		self:SetBackdropBorderColor(r, g, b, 1)
-	else
-		self:SetBackdropBorderColor(unpack(C.media.border_color))
-	end
-	
+    self.Icon:SetTexCoord(.08, .92, .08, .92)
 	if(item.count and item.count > 1) then
 		self.Count:SetText(item.count >= 1e3 and "*" or item.count)
 		self.Count:Show()
@@ -90,6 +143,41 @@ local function ItemButton_Update(self, item)
 		self.Count:Hide()
 	end
 	self.count = item.count -- Thank you Blizz for not using local variables >.> (BankFrame.lua @ 234 )
+
+	-- Durability
+	local dCur, dMax = GetContainerItemDurability(item.bagID, item.slotID)
+	if dMax and (dMax > 0) and (dCur < dMax) then
+		local dPer = (dCur / dMax * 100)
+		local r, g, b = ItemColorGradient((dCur/dMax), 1, 0, 0, 1, 1, 0, 0, 1, 0)
+		self.TopString:SetText(Round(dPer).."%")
+		self.TopString:SetTextColor(r, g, b)
+	else
+		self.TopString:SetText("")
+	end
+
+	-- Item Level
+	local _,_,_,_,_,_,itemLink = GetContainerItemInfo(item.bagID, item.slotID)
+	if itemLink then
+		local _,_,itemRarity,itemLevel,_,itemType = GetItemInfo(itemLink)
+
+		if itemType and itemLevel and ilvlTypes[itemType] and itemLevel > 0 then
+			local currentUpgradeLevel, maxUpgradeLevel = GetItemUpgradeLevel(itemLink)
+			if (currentUpgradeLevel and maxUpgradeLevel) then
+				if itemRarity <= 3 then
+					itemLevel = itemLevel + (tonumber(currentUpgradeLevel) * 8)
+				else
+					itemLevel = itemLevel + (tonumber(currentUpgradeLevel) * 4)
+				end
+			end
+
+			self.BottomString:SetText(itemLevel)
+			self.BottomString:SetTextColor(unpack(GetILVLColor(itemLevel)))
+		else
+			self.BottomString:SetText("")
+		end
+	else
+		self.BottomString:SetText("")
+	end
 
 	self:UpdateCooldown(item)
 	self:UpdateLock(item)
@@ -131,32 +219,14 @@ end
 	@callback OnUpdateQuest(item)
 ]]
 local function ItemButton_UpdateQuest(self, item)
-	local r,g,b,a = 1,1,1,1
-	local tL,tR,tT,tB = 0,1, 0,1
-	local blend = "BLEND"
-	local texture
-
-	if(item.questID and not item.questActive) then
-		texture = TEXTURE_ITEM_QUEST_BANG
-	elseif(item.questID or item.isQuestItem) then
-		texture = TEXTURE_ITEM_QUEST_BORDER
-	elseif(item.rarity and item.rarity > 1 and self.glowTex) then
-		a, r,g,b = self.glowAlpha, GetItemQualityColor(item.rarity)
-		texture = self.glowTex
-		blend = self.glowBlend
-		tL,tR,tT,tB = unpack(self.glowCoords)
-	end
-
-	if(texture) then
-		self.Quest:SetTexture(texture)
-		self.Quest:SetTexCoord(tL,tR,tT,tB)
-		self.Quest:SetBlendMode(blend)
-		self.Quest:SetVertexColor(r,g,b,a)
-		self.Quest:Show()
+	if item.questID or item.isQuestItem then
+		self.Border:SetBackdropBorderColor(1, 1, 0, 1)
+	elseif item.rarity and item.rarity > 1 then
+		local r, g, b = GetItemQualityColor(item.rarity)
+		self.Border:SetBackdropBorderColor(r, g, b, 1)
 	else
-		self.Quest:Hide()
+		self.Border:SetBackdropBorderColor(0, 0, 0, 1)
 	end
-
 	if(self.OnUpdateQuest) then self:OnUpdateQuest(item) end
 end
 

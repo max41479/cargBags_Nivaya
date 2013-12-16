@@ -23,7 +23,6 @@ DESCRIPTION
 DEPENDENCIES
 	mixins-add/itemkeys/basic.lua
 ]]
-
 local parent, ns = ...
 local cargBags = ns.cargBags
 
@@ -48,6 +47,7 @@ local function initUpdater()
 
 	local updater = CreateFrame("Frame")
 	updater:RegisterEvent("EQUIPMENT_SETS_CHANGED")
+	updater:RegisterEvent("PLAYER_ALIVE")
 	updater:SetScript("OnEvent", function()
 		updateSets()
 		cargBags:FireEvent("BAG_UPDATE")
