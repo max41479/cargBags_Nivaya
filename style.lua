@@ -582,16 +582,10 @@ function MyContainer:OnCreate(name, settings)
 
 		if tBag or tBank then
 			local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-			if C.skins.blizzard_frames == true then
-				T.SkinCloseButton(close, nil, nil, true)
-				close:SetPoint("TOPRIGHT", 0, 0)
-				close:SetWidth(14)
-				close:SetHeight(14)
-			else
-				close:SetPoint("TOPRIGHT", 5, 5)
-				close:SetWidth(25)
-				close:SetHeight(25)
-			end
+			T.SkinCloseButton(close, nil, nil, true)
+			close:SetPoint("TOPRIGHT", 0, 0)
+			close:SetWidth(14)
+			close:SetHeight(14)
 			close:SetScript("OnClick", function(self) if cbNivaya:AtBank() then CloseBankFrame() else CloseAllBags() end end)
 		end
 	end
@@ -802,6 +796,9 @@ function MyContainer:OnCreate(name, settings)
 		local search = self:SpawnPlugin("SearchBar", infoFrame)
 		search.isGlobal = true
 		search.highlightFunction = function(button, match) button:SetAlpha(match and 1 or 0.1) end
+		search.bg = CreateFrame("Frame", nil, search)
+		search.bg:CreatePanel("Default", 156, 16, "CENTER", search, "CENTER", 0, 0)
+		search.bg:SetFrameStrata(search:GetFrameStrata())
 
 		local searchIcon = background:CreateTexture(nil, "ARTWORK")
 		searchIcon:SetTexture(Textures.Search)

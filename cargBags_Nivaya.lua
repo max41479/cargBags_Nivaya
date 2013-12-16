@@ -99,7 +99,7 @@ do	--Replacement for UIDropDownMenu
 
 	function f:UpdatePosition(frame, point, relativepoint, ofsX, ofsY)
 
-		point, relativepoint, ofsX, ofsY = point or "BOTTOMRIGHT", relativepoint or "BOTTOMRIGHT", ofsX or -21, ofsY or 157
+		point, relativepoint, ofsX, ofsY = point or "BOTTOMRIGHT", relativepoint or "BOTTOMRIGHT", ofsX or -25, ofsY or 138
 
 		self:ClearAllPoints()
 		self:SetPoint(point, frame, relativepoint, ofsX, ofsY)

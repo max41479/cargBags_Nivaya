@@ -90,6 +90,7 @@ cargBags:RegisterPlugin("SearchBar", function(self, target)
 	search.Clear = onEscape
 	search.DoSearch = search.doSearch
 
+	--[[
 	local left = search:CreateTexture(nil, "BACKGROUND")
 	left:SetTexture("Interface\\Common\\Common-Input-Border")
 	left:SetTexCoord(0, 0.0625, 0, 0.625)
@@ -113,6 +114,7 @@ cargBags:RegisterPlugin("SearchBar", function(self, target)
 	center:SetPoint("RIGHT", right, "LEFT", 0, 0)
 	center:SetPoint("LEFT", left, "RIGHT", 0, 0)
 	search.Center = center
+	]]--
 
 	search:SetScript("OnTextChanged", doSearch)
 	search:SetScript("OnEscapePressed", onEscape)

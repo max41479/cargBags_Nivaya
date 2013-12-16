@@ -105,23 +105,16 @@ end
 
 local function ItemButton_Scaffold(self)
 	self:SetSize(37, 37)
-	local bordersize = 768/string.match(GetCVar("gxResolution"), "%d+x(%d+)")/(GetCVar("uiScale")*cBnivCfg.scale)
+	self:SetHighlightTexture("")
+	self:SetPushedTexture("")
+	self:SetNormalTexture("")
+	self:SetTemplate("Transparent")
+	self:StyleButton()
 	local name = self:GetName()
 	self.Icon = _G[name.."IconTexture"]
 	self.Count = _G[name.."Count"]
 	self.Cooldown = _G[name.."Cooldown"]
 	self.Quest = _G[name.."IconQuestTexture"]
-	self.Border = CreateFrame("Frame", nil, self)
-	self.Border:SetPoint("TOPLEFT", self.Icon, 0, 0)
-	self.Border:SetPoint("BOTTOMRIGHT", self.Icon, 0, 0)
-	self.Border:SetBackdrop({
-		-- bgFile = "Interface\\Buttons\\WHITE8x8",
-		edgeFile = "Interface\\Buttons\\WHITE8x8",
-		edgeSize = bordersize,
-	})
-	-- self.Border:SetBackdropColor(0, 0, 0, 0)
-	self.Border:SetBackdropBorderColor(0, 0, 0, 0)
-	self.Border:SetFrameLevel(1)
 
 	self.TopString = CreateInfoString(self, "TOP")
 	self.BottomString = CreateInfoString(self, "BOTTOM")
@@ -135,7 +128,9 @@ end
 local ilvlTypes = {Armor = true, Weapon = true}
 local function ItemButton_Update(self, item)
 	self.Icon:SetTexture(item.texture or self.bgTex)
-    self.Icon:SetTexCoord(.08, .92, .08, .92)
+	self.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	self.Icon:SetPoint("TOPLEFT", 2, -2)
+	self.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
 	if(item.count and item.count > 1) then
 		self.Count:SetText(item.count >= 1e3 and "*" or item.count)
 		self.Count:Show()
@@ -220,12 +215,10 @@ end
 ]]
 local function ItemButton_UpdateQuest(self, item)
 	if item.questID or item.isQuestItem then
-		self.Border:SetBackdropBorderColor(1, 1, 0, 1)
+		self:SetBackdropBorderColor(1, 1, 0, 1)
 	elseif item.rarity and item.rarity > 1 then
 		local r, g, b = GetItemQualityColor(item.rarity)
-		self.Border:SetBackdropBorderColor(r, g, b, 1)
-	else
-		self.Border:SetBackdropBorderColor(0, 0, 0, 1)
+		self:SetBackdropBorderColor(r, g, b, 1)
 	end
 	if(self.OnUpdateQuest) then self:OnUpdateQuest(item) end
 end
