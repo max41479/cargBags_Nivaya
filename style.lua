@@ -757,7 +757,11 @@ function MyContainer:OnCreate(name, settings)
 		local dtNT = _G[self.DropTarget:GetName().."NormalTexture"]
 		if dtNT then dtNT:SetTexture(nil) end
 
+		self.DropTarget:SetHighlightTexture("")
+		self.DropTarget:SetPushedTexture("")
+		self.DropTarget:SetNormalTexture("")
 		self.DropTarget:SetTemplate("Transparent")
+		self.DropTarget:StyleButton()
 		self.DropTarget:SetWidth(itemSlotSize - 1)
 		self.DropTarget:SetHeight(itemSlotSize - 1)
 
