@@ -22,6 +22,7 @@ local Textures = {
 }
 
 local itemSlotSize = ns.options.itemSlotSize
+local itemSlotPadding = ns.options.itemSlotPadding
 ------------------------------------------
 -- MyContainer specific
 ------------------------------------------
@@ -549,7 +550,7 @@ function MyContainer:OnCreate(name, settings)
 	end
 	self.ContainerHeight = 0
 	self:UpdateDimensions()
-	self:SetWidth((itemSlotSize + 2) * self.Columns + 2)
+	self:SetWidth((itemSlotSize + itemSlotPadding) * self.Columns + 2)
 
 	-- The frame background
 	local tBankCustom = (tBankBags and not cBnivCfg.BankBlack)
@@ -581,10 +582,16 @@ function MyContainer:OnCreate(name, settings)
 
 		if tBag or tBank then
 			local close = CreateFrame("Button", nil, self, "UIPanelCloseButton")
-			T.SkinCloseButton(close, nil, nil, true)
-			close:SetPoint("TOPRIGHT", 1, 1)
+			if C.skins.blizzard_frames == true then
+				T.SkinCloseButton(close, nil, nil, true)
+				close:SetPoint("TOPRIGHT", 0, 0)
 				close:SetWidth(14)
 				close:SetHeight(14)
+			else
+				close:SetPoint("TOPRIGHT", 5, 5)
+				close:SetWidth(25)
+				close:SetHeight(25)
+			end
 			close:SetScript("OnClick", function(self) if cbNivaya:AtBank() then CloseBankFrame() else CloseAllBags() end end)
 		end
 	end
