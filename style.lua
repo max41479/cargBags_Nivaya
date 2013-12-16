@@ -561,12 +561,7 @@ function MyContainer:OnCreate(name, settings)
 
 	-- The frame background
 	local background = CreateFrame("Frame", nil, self)
-	background:SetBackdrop{
-		bgFile = Textures.Background,
-		edgeFile = Textures.Background,
-		tile = true, tileSize = 16, edgeSize = 1,
-		insets = {left = 1, right = 1, top = 1, bottom = 1},
-	}
+	background:SetTemplate("Transparent", "Shadow")
 	background:SetFrameStrata("HIGH")
 	background:SetFrameLevel(1)
 	background:SetBackdropColor(color_rb,color_gb,color_bb,alpha_fb)
