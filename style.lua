@@ -29,9 +29,8 @@ local cbNivaya = cargBags:GetImplementation("Nivaya")
 local MyContainer = cbNivaya:GetContainerClass()
 
 local function GetClassColor(class)
-	if not RAID_CLASS_COLORS[class] then return {1, 1, 1} end
-	local classColors = CUSTOM_CLASS_COLORS and CUSTOM_CLASS_COLORS[class] or RAID_CLASS_COLORS[class]
-	return {classColors.r, classColors.g, classColors.b}
+	local r, g, b = unpack(C.skins.color_theme)
+	return {r, g, b}
 end
 
 local GetNumFreeSlots = function(bagType)
@@ -351,9 +350,9 @@ function cbNivResetNew()
 end
 
 local UpdateDimensions = function(self)
-	local height = 0			-- Normal margin space
+	local height = 5			-- Normal margin space
 	if self.BagBar and self.BagBar:IsShown() then
-		height = height + 40	-- Bag button space
+		height = height + 35	-- Bag button space
 	end
 	if self.Space then
 		height = height + 16	-- additional info display space
@@ -657,7 +656,7 @@ function MyContainer:OnCreate(name, settings)
 		bagButtons.highlightFunction = function(button, match) button:SetAlpha(match and 1 or 0.1) end
 		bagButtons.isGlobal = true
 
-		bagButtons:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 25)
+		bagButtons:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 30)
 		if not(ns.options.bagsShownAtStartup) then
 			bagButtons:Hide()
 		end
