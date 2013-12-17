@@ -351,9 +351,14 @@ function cbNivResetNew()
 end
 
 local UpdateDimensions = function(self)
-	local height = 5			-- Normal margin space
+	local height			-- Normal margin space
+	if self.name == "cBniv_Bag" then
+		height = 4
+	else
+		height = 0
+	end
 	if self.BagBar and self.BagBar:IsShown() then
-		height = height + 35	-- Bag button space
+		height = height + 36	-- Bag button space
 	end
 	if self.Space then
 		height = height + 16	-- additional info display space
@@ -657,7 +662,7 @@ function MyContainer:OnCreate(name, settings)
 		bagButtons.highlightFunction = function(button, match) button:SetAlpha(match and 1 or 0.1) end
 		bagButtons.isGlobal = true
 
-		bagButtons:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, 30)
+		bagButtons:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -2, tBag and 30 or 24)
 		if not(ns.options.bagsShownAtStartup) then
 			bagButtons:Hide()
 		end
