@@ -469,7 +469,7 @@ local createIconButton = function (name, parent, texture, point, hint, isBag)
 
 	button.tooltip = button:CreateFontString()
 	-- button.tooltip:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", isBag and -76 or -59, 4.5)
-	button.tooltip:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+	button.tooltip:SetFont(unpack(font))
 	button.tooltip:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 	button.tooltip:SetJustifyH("RIGHT")
 	button.tooltip:SetText(hint)
@@ -558,11 +558,12 @@ function MyContainer:OnCreate(name, settings)
 	self:SetWidth((itemSlotSize + itemSlotPadding) * self.Columns + 2)
 
 	-- The frame background
-	local tBankCustom = (tBankBags and not cBnivCfg.BankBlack)
+	--[[local tBankCustom = (tBankBags and not cBnivCfg.BankBlack)
 	local color_rb = ns.options.colors.background[1]
 	local color_gb = tBankCustom and .2 or ns.options.colors.background[2]
 	local color_bb = tBankCustom and .3 or ns.options.colors.background[3]
 	local alpha_fb = ns.options.colors.background[4]
+	]]
 
 	-- The frame background
 	local background = CreateFrame("Frame", nil, self)
@@ -575,7 +576,7 @@ function MyContainer:OnCreate(name, settings)
 
 	-- Caption, close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
-	caption:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+	caption:SetFont(unpack(font))
 	caption:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 	if(caption) then
 		local t = L.bagCaptions[self.name] or (tBankBags and strsub(self.name, 5))
@@ -780,7 +781,7 @@ function MyContainer:OnCreate(name, settings)
 		self.DropTarget:SetScript("OnReceiveDrag", DropTargetProcessItem)
 
 		local fs = self:CreateFontString(nil, "OVERLAY")
-		fs:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+		fs:SetFont(unpack(font))
 		fs:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 		fs:SetJustifyH("LEFT")
 		fs:SetPoint("BOTTOMRIGHT", self.DropTarget, "BOTTOMRIGHT", 1.5, 1.5)
@@ -828,7 +829,7 @@ function MyContainer:OnCreate(name, settings)
 		-- The money display
 		-- local money = self:SpawnPlugin("TagDisplay", "[money]", self)
 		-- money:SetPoint("TOPRIGHT", self, -25.5, -2.5)
-		-- money:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+		-- money:SetFont(unpack(font))
 		-- money:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 		-- money:SetJustifyH("RIGHT")
 	end
