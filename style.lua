@@ -233,9 +233,9 @@ function cbNivResetNew()
 end
 
 local UpdateDimensions = function(self)
-	local height = 5			-- Normal margin space
+	local height = 4			-- Normal margin space
 	if self.BagBar and self.BagBar:IsShown() then
-		height = height + 35	-- Bag button space
+		height = height + 36	-- Bag button space
 	end
 	if self.Space then
 		height = height + 16	-- additional info display space
@@ -344,7 +344,7 @@ local createIconButton = function (name, parent, texture, point, hint, isBag)
 
 	button.tooltip = button:CreateFontString()
 	-- button.tooltip:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", isBag and -76 or -59, 4.5)
-	button.tooltip:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+	button.tooltip:SetFont(unpack(font))
 	button.tooltip:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 	button.tooltip:SetJustifyH("RIGHT")
 	button.tooltip:SetText(hint)
@@ -465,7 +465,7 @@ function MyContainer:OnCreate(name, settings)
 
 	-- Caption, close button
 	local caption = background:CreateFontString(background, "OVERLAY", nil)
-	caption:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+	caption:SetFont(unpack(font))
 	caption:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 	if(caption) then
 		local t = L.bagCaptions[self.name] or (tBankBags and strsub(self.name, 5))
@@ -674,9 +674,13 @@ function MyContainer:OnCreate(name, settings)
 		local dtNT = _G[self.DropTarget:GetName().."NormalTexture"]
 		if dtNT then dtNT:SetTexture(nil) end
 
+		self.DropTarget:SetHighlightTexture("")
+		self.DropTarget:SetPushedTexture("")
+		self.DropTarget:SetNormalTexture("")
 		self.DropTarget:SetTemplate("Transparent")
-		self.DropTarget:SetWidth(itemSlotSize - 1)
-		self.DropTarget:SetHeight(itemSlotSize - 1)
+		self.DropTarget:StyleButton()
+		self.DropTarget:SetWidth(itemSlotSize)
+		self.DropTarget:SetHeight(itemSlotSize)
 
 		local DropTargetProcessItem = function()
 			-- if CursorHasItem() then	-- Commented out to fix Guild Bank -> Bags item dragging
@@ -688,7 +692,7 @@ function MyContainer:OnCreate(name, settings)
 		self.DropTarget:SetScript("OnReceiveDrag", DropTargetProcessItem)
 
 		local fs = self:CreateFontString(nil, "OVERLAY")
-		fs:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+		fs:SetFont(unpack(font))
 		fs:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 		fs:SetJustifyH("LEFT")
 		fs:SetPoint("BOTTOMRIGHT", self.DropTarget, "BOTTOMRIGHT", 1.5, 1.5)

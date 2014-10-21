@@ -2,7 +2,7 @@
 ## Title: cargBags_Nivaya: |cff1784d1Dark ShestakUI|r
 ## Author: Luzzifus (Modified by Nibelheim, humfras)
 ## RequiredDeps: DarkShestakUI
-## OptionalDeps: nibRealUI, ItemRack, Outfitter
+## OptionalDeps: ItemRack, Outfitter
 ## SavedVariables: cBnivCfg, cB_CustomBags, cBniv_CatInfo
 ## SavedVariablesPerCharacter: cB_KnownItems, cBniv
 ## X-Curse-Packaged-Version: 6.0

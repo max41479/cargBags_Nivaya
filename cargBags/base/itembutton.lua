@@ -70,7 +70,7 @@ end
 ]]
 local bFS
 function ItemButton:Create(tpl, parent)
-	local font = (RealUI and RealUI.font.pixel1) or ns.options.fonts.itemCount
+	local font = ns.options.fonts.itemCount
 	local impl = self.implementation
 	impl.numSlots = (impl.numSlots or 0) + 1
 	local name = ("%sSlot%d"):format(impl.name, impl.numSlots)

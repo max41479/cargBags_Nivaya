@@ -11,7 +11,7 @@ local cbNivaya = cargBags:GetImplementation("Nivaya")
 
 do	--Replacement for UIDropDownMenu
 
-	local font = (RealUI and RealUI.font.pixel1) or ns.options.fonts.dropdown
+	local font = ns.options.fonts.dropdown
 	local frameHeight = 14
 	local defaultWidth = 120
 	local frameInset = 16
@@ -29,7 +29,7 @@ do	--Replacement for UIDropDownMenu
 		edgeFile = "Interface\\Buttons\\WHITE8x8", 
 		tile = true, tileSize = 16, edgeSize = 1, 
 		insets = { left = inset, right = inset, top = inset, bottom = inset }})
-	local colors = (RealUI and RealUI.media.window) or ns.options.colors.background
+	local colors = ns.options.colors.background
 	f:SetBackdropColor(unpack(colors))
 	f:SetBackdropBorderColor(0, 0, 0)
 

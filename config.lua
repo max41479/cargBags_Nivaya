@@ -21,28 +21,28 @@ sizes = {
 fonts = {
 	-- Font to use for bag captions and other strings
 	standard = {
-		[[Interface\AddOns\DarkShestakUI\Media\Fonts\Pixel.ttf]], 	-- Font path
+		C.media.pixel_font, 	-- Font path
 		8, 						-- Font Size
 		"OUTLINEMONOCHROME",	-- Flags
 	},
 
 	--Font to use for the dropdown menu
 	dropdown = {
-		[[Interface\AddOns\cDarkShestakUI\Media\Fonts\Pixel.ttf]], 	-- Font path
+		C.media.pixel_font, 	-- Font path
 		8, 						-- Font Size
 		nil,	-- Flags
 	},
 
 	-- Font to use for durability and item level
 	itemInfo = {
-		[[Interface\AddOns\DarkShestakUI\Media\Fonts\Pixel.ttf]], 	-- Font path
+		C.media.pixel_font, 	-- Font path
 		8, 						-- Font Size
 		"OUTLINEMONOCHROME",	-- Flags
 	},
 
 	-- Font to use for number of items in a stack
 	itemCount = {
-		[[Interface\AddOns\DarkShestakUI\Media\Fonts\Pixel.ttf]], 	-- Font path
+		C.media.pixel_font, 	-- Font path
 		8, 						-- Font Size
 		"OUTLINEMONOCHROME",	-- Flags
 	},
