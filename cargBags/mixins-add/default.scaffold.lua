@@ -52,27 +52,6 @@ local function Round(num, idp)
 	return math.floor(num * mult + 0.5) / mult
 end
 
-local function retrieveFont()
-	return ns.options.fonts.itemInfo
-end
-
-local ilvlLimits = {
-	normal = 385,
-	uncommon = 437,
-	rare = 463,
-}
-local function GetILVLColor(ilvl)
-	if ilvl >= ilvlLimits.rare then
-		return {GetItemQualityColor(4)}
-	elseif ilvl >= ilvlLimits.uncommon then
-		return {GetItemQualityColor(3)}
-	elseif ilvl >= ilvlLimits.normal then
-		return {GetItemQualityColor(2)}
-	else
-		return {0.8, 0.8, 0.8, "ffd0d0d0"}
-	end
-end
-
 local function ItemColorGradient(perc, ...)
 	if perc >= 1 then
 		return select(select('#', ...) - 2, ...)
@@ -88,8 +67,6 @@ local function ItemColorGradient(perc, ...)
 end
 
 local function CreateInfoString(button, position)
-	local font = retrieveFont()
-
 	local str = button:CreateFontString(nil, "OVERLAY")
 	if position == "TOP" then
 		str:SetJustifyH("LEFT")
@@ -98,6 +75,7 @@ local function CreateInfoString(button, position)
 		str:SetJustifyH("RIGHT")
 		str:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1.5, 1.5)
 	end	
+	local font = ns.options.fonts.itemCount
 	str:SetFont(unpack(font))
 
 	return str
@@ -109,12 +87,25 @@ local function ItemButton_Scaffold(self)
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
 	self:SetTemplate("Transparent")
-	self:StyleButton()
+
 	local name = self:GetName()
 	self.Icon = _G[name.."IconTexture"]
 	self.Count = _G[name.."Count"]
 	self.Cooldown = _G[name.."Cooldown"]
 	self.Quest = _G[name.."IconQuestTexture"]
+	self.Border = _G[name.."NormalTexture"]
+
+	self.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	self.Icon:SetPoint("TOPLEFT", 2, -2)
+	self.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
+
+	self:HookScript('OnEnter', function()
+		self.oldColor = {self:GetBackdropBorderColor()}
+		self:SetBackdropBorderColor(1, 1, 1)
+	end)
+	self:HookScript('OnLeave', function()
+		self:SetBackdropBorderColor(unpack(self.oldColor))
+	end)
 
 	self.TopString = CreateInfoString(self, "TOP")
 	self.BottomString = CreateInfoString(self, "BOTTOM")
@@ -127,10 +118,15 @@ end
 ]]
 local ilvlTypes = {Armor = true, Weapon = true}
 local function ItemButton_Update(self, item)
-	self.Icon:SetTexture(item.texture or self.bgTex)
-	self.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	self.Icon:SetPoint("TOPLEFT", 2, -2)
-	self.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
+	if item.texture then
+		self.Icon:SetTexture(item.texture or ((cBnivCfg.CompressEmpty and self.bgTex) or unpack({1,1,1,0.1})))
+	else
+		if cBnivCfg.CompressEmpty then
+			self.Icon:SetTexture(self.bgTex)
+		else
+			self.Icon:SetTexture(1, 1, 1, 0.1)
+		end
+	end
 	if(item.count and item.count > 1) then
 		self.Count:SetText(item.count >= 1e3 and "*" or item.count)
 		self.Count:Show()
@@ -166,7 +162,7 @@ local function ItemButton_Update(self, item)
 			end
 
 			self.BottomString:SetText(itemLevel)
-			self.BottomString:SetTextColor(unpack(GetILVLColor(itemLevel)))
+			self.BottomString:SetTextColor(GetItemQualityColor(itemRarity))
 		else
 			self.BottomString:SetText("")
 		end
@@ -219,6 +215,8 @@ local function ItemButton_UpdateQuest(self, item)
 	elseif item.rarity and item.rarity > 1 then
 		local r, g, b = GetItemQualityColor(item.rarity)
 		self:SetBackdropBorderColor(r, g, b, 1)
+	else
+		self:SetBackdropBorderColor(0.1, 0.1, 0.1, 1)
 	end
 	if(self.OnUpdateQuest) then self:OnUpdateQuest(item) end
 end

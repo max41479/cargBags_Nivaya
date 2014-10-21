@@ -43,8 +43,8 @@ end
 local BagButton = cargBags:NewClass("BagButton", nil, "CheckButton")
 
 -- Default attributes
-BagButton.checkedTex = [[Interface\AddOns\cargBags_Nivaya\media\BagHighlight]]
-BagButton.bgTex = [[Interface\AddOns\cargBags_Nivaya\media\BagSlot]]
+--BagButton.checkedTex = [[Interface\AddOns\cargBags_Nivaya\media\BagHighlight]]
+--BagButton.bgTex = [[Interface\AddOns\cargBags_Nivaya\media\BagSlot]]
 BagButton.itemFadeAlpha = 0.2
 
 local buttonNum = 0
@@ -61,7 +61,6 @@ function BagButton:Create(bagID)
 
 	button:RegisterForDrag("LeftButton", "RightButton")
 	button:RegisterForClicks("anyUp")
-	button:SetCheckedTexture(self.checkedTex, "ADD")
 
 	button:SetSize(32, 32)
 	button:SetHighlightTexture("")
@@ -89,7 +88,7 @@ end
 
 function BagButton:Update()
 	local icon = GetInventoryItemTexture("player", self.invID)
-	self.Icon:SetTexture(icon or self.bgTex)
+	self.Icon:SetTexture(icon)
 	self.Icon:SetDesaturated(IsInventoryItemLocked(self.invID))
 
 	if(self.bagID > NUM_BAG_SLOTS) then
