@@ -147,6 +147,37 @@ local function ItemButton_Update(self, item)
 	end
 
 	-- Item Level
+	local itemLevelPattern = gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+	local tooltipLines = {
+		"ShestakUI_ItemScanningTooltipTextLeft2",
+		"ShestakUI_ItemScanningTooltipTextLeft3",
+		"ShestakUI_ItemScanningTooltipTextLeft4"
+	}
+	local tooltip = CreateFrame("GameTooltip", "ShestakUI_ItemScanningTooltip", UIParent, "GameTooltipTemplate")
+	tooltip:SetOwner(UIParent, "ANCHOR_NONE")
+
+	-- Scan tooltip for item level information
+	local function GetItemLevelFromTooltip(itemLink)
+		if not itemLink or not GetItemInfo(itemLink) then
+			return
+		end
+
+		tooltip:ClearLines()
+		tooltip:SetHyperlink(itemLink)
+
+		local text, itemLevel
+		for index = 1, #tooltipLines do
+			text = _G[tooltipLines[index]]:GetText()
+
+			if text then
+				itemLevel = tonumber(string.match(text, itemLevelPattern))
+				if itemLevel then
+					return itemLevel
+				end
+			end
+		end
+	end
+
 	local _,_,_,_,_,_,itemLink = GetContainerItemInfo(item.bagID, item.slotID)
 	if itemLink then
 		local _,_,itemRarity,itemLevel,_,itemType = GetItemInfo(itemLink)
@@ -160,7 +191,18 @@ local function ItemButton_Update(self, item)
 					itemLevel = itemLevel + (tonumber(currentUpgradeLevel) * 4)
 				end
 			end
-
+			
+			local numBonusIDs = tonumber(strmatch(itemLink, ".+:%d+:512:%d*:(%d+).+"))
+			if numBonusIDs then
+				if GetDetailedItemLevelInfo then
+					local effectiveLevel, previewLevel, origLevel = GetDetailedItemLevelInfo(itemLink)
+					itemLevel = effectiveLevel or itemLevel
+				end
+			end
+			if itemRarity == 6 then
+					itemlevel = GetItemLevelFromTooltip(itemLink) or itemlevel
+			end
+			itemLevel = GetItemLevelFromTooltip(itemLink)
 			self.BottomString:SetText(itemLevel)
 			self.BottomString:SetTextColor(GetItemQualityColor(itemRarity))
 		else
