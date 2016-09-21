@@ -12,7 +12,6 @@
 
 config.lua
 
-libs\LibItemUpgradeInfo-1.0\LibItemUpgradeInfo-1.0.xml
 cargBags\embed.xml
 localization.lua
 filters.lua
