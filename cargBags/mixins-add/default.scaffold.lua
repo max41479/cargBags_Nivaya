@@ -35,6 +35,7 @@ local scantip = CreateFrame("GameTooltip", "ItemUpgradeScanTooltip", nil, "GameT
 scantip:SetOwner(UIParent, "ANCHOR_NONE")
 
 local function GetItemUpgradeLevel(itemLink)
+	scantip:SetOwner(UIParent, "ANCHOR_NONE")
 	scantip:SetHyperlink(itemLink)
 	for i = 2, scantip:NumLines() do -- Line 1 = name so skip
 		local text = _G["ItemUpgradeScanTooltipTextLeft"..i]:GetText()
@@ -45,6 +46,7 @@ local function GetItemUpgradeLevel(itemLink)
 			end
 		end
 	end
+	scantip:Hide()
 end
 
 local function Round(num, idp)
@@ -74,15 +76,31 @@ local function CreateInfoString(button, position)
 	else
 		str:SetJustifyH("RIGHT")
 		str:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 1.5, 1.5)
-	end	
+	end
 	local font = ns.options.fonts.itemCount
 	str:SetFont(unpack(font))
 
 	return str
 end
 
+local function GetScreenModes()
+	local curResIndex = GetCurrentResolution()
+	local curRes = curResIndex > 0 and select(curResIndex, GetScreenResolutions()) or nil
+	local windowedMode = Display_DisplayModeDropDown:windowedmode()
+	
+	local resolution = curRes or (windowedMode and GetCVar("gxWindowedResolution")) or GetCVar("gxFullscreenResolution")
+	
+	return resolution
+end
+
 local function ItemButton_Scaffold(self)
 	self:SetSize(37, 37)
+--[[
+	local monitorIndex = (tonumber(GetCVar('gxMonitor')) or 0) + 1
+	local resolution = select(GetCurrentResolution(monitorIndex), GetScreenResolutions(monitorIndex))
+	local bordersize = 768/string.match(resolution, "%d+x(%d+)")/(GetCVar("uiScale")*cBnivCfg.scale)
+]]
+	local bordersize = 768/string.match(GetScreenModes(), "%d+x(%d+)")/(GetCVar("uiScale")*cBnivCfg.scale)
 	self:SetHighlightTexture("")
 	self:SetPushedTexture("")
 	self:SetNormalTexture("")
@@ -116,7 +134,8 @@ end
 	@param item <table> The itemTable holding information, see Implementation:GetItemInfo()
 	@callback OnUpdate(item)
 ]]
-local ilvlTypes = {Armor = true, Weapon = true}
+local L = cargBags:GetLocalizedTypes()
+local ilvlTypes = {[L.ItemClass["Armor"]] = true, [L.ItemClass["Weapon"]] = true}
 local function ItemButton_Update(self, item)
 	if item.texture then
 		self.Icon:SetTexture(item.texture or ((cBnivCfg.CompressEmpty and self.bgTex) or unpack({1,1,1,0.1})))
@@ -124,7 +143,7 @@ local function ItemButton_Update(self, item)
 		if cBnivCfg.CompressEmpty then
 			self.Icon:SetTexture(self.bgTex)
 		else
-			self.Icon:SetTexture(1, 1, 1, 0.1)
+			self.Icon:SetColorTexture(1,1,1,0.1)
 		end
 	end
 	if(item.count and item.count > 1) then
@@ -191,7 +210,7 @@ local function ItemButton_Update(self, item)
 					itemLevel = itemLevel + (tonumber(currentUpgradeLevel) * 4)
 				end
 			end
-			
+
 			local numBonusIDs = tonumber(strmatch(itemLink, ".+:%d+:512:%d*:(%d+).+"))
 			if numBonusIDs then
 				if GetDetailedItemLevelInfo then

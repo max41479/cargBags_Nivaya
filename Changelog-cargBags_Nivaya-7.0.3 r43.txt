@@ -1,0 +1,124 @@
+------------------------------------------------------------------------
+r42 | humfras | 2016-09-02 18:39:25 +0000 (Fri, 02 Sep 2016) | 1 line
+Changed paths:
+   A /tags/7.0.3 r43 (from /trunk:41)
+
+Tagging as 7.0.3 r43
+------------------------------------------------------------------------
+r41 | humfras | 2016-08-27 16:11:21 +0000 (Sat, 27 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/mixins-add/plugins/bagBar.lua
+
+fix bank bags drag handling
+------------------------------------------------------------------------
+r40 | humfras | 2016-08-27 16:00:36 +0000 (Sat, 27 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/mixins-add/plugins/bagBar.lua
+
+fix possible bug with bank bag frame
+------------------------------------------------------------------------
+r39 | humfras | 2016-08-26 23:25:42 +0000 (Fri, 26 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+
+fixed some typos caused by the last update
+------------------------------------------------------------------------
+r38 | humfras | 2016-08-26 20:30:20 +0000 (Fri, 26 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/filters.lua
+   M /trunk/style.lua
+
+few more fixes / enhancements
+------------------------------------------------------------------------
+r36 | humfras | 2016-08-24 20:53:15 +0000 (Wed, 24 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/style.lua
+
+fixed a typo in the Molinari handler
+------------------------------------------------------------------------
+r34 | humfras | 2016-08-24 18:38:57 +0000 (Wed, 24 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/style.lua
+
++ added a workaround for a potential bug when using Molinari
+------------------------------------------------------------------------
+r32 | humfras | 2016-08-22 10:37:11 +0000 (Mon, 22 Aug 2016) | 2 lines
+Changed paths:
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/filters.lua
+   M /trunk/localization.lua
+
+added a new default bag for gems
+ (if you have a custom filter for gems, you can delete it via '/cbniv delbag NAMEOFBAG')
+------------------------------------------------------------------------
+r30 | humfras | 2016-08-22 09:39:57 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/localization.lua
+
+fixed a rare bug with the item grouping
+------------------------------------------------------------------------
+r29 | humfras | 2016-08-22 09:17:30 +0000 (Mon, 22 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/style.lua
+
+fixed some typos leading to bugs with RealUI
+------------------------------------------------------------------------
+r28 | humfras | 2016-08-20 22:38:00 +0000 (Sat, 20 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/filters.lua
+
+performance upgrade for the 'new item' check
+------------------------------------------------------------------------
+r26 | humfras | 2016-08-20 15:36:15 +0000 (Sat, 20 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+
+fixed green texture bug when not compressing empty bag slots ( /cbniv empty )
+------------------------------------------------------------------------
+r25 | humfras | 2016-08-20 15:21:26 +0000 (Sat, 20 Aug 2016) | 3 lines
+Changed paths:
+   M /trunk/cargBags/base/implementation.lua
+   M /trunk/cargBags/mixins/locale.lua
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+   M /trunk/cargBags_Nivaya.toc
+   A /trunk/libs
+   A /trunk/libs/LibItemUpgradeInfo-1.0
+   A /trunk/libs/LibItemUpgradeInfo-1.0/Changelog-LibItemUpgradeInfo-1.0-Release-70000-24.txt
+   A /trunk/libs/LibItemUpgradeInfo-1.0/Core.lua
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibItemUpgradeInfo-1.0.toc
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibItemUpgradeInfo-1.0.xml
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/LibStub.lua
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/LibStub.toc
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/tests
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/tests/test.lua
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/tests/test2.lua
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/tests/test3.lua
+   A /trunk/libs/LibItemUpgradeInfo-1.0/LibStub/tests/test4.lua
+
+- fixed bugs with windowed mode
+- added LibItemUpgradeInfo-1.0 to show the correct iLvl
+- updated the locale strings
+------------------------------------------------------------------------
+r24 | humfras | 2016-08-19 12:09:56 +0000 (Fri, 19 Aug 2016) | 1 line
+Changed paths:
+   M /trunk/cargBags/base/itembutton.lua
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+   M /trunk/cargBags_Nivaya.lua
+
+fix bugs with RealUI implementation
+------------------------------------------------------------------------
+r23 | humfras | 2016-08-17 20:18:31 +0000 (Wed, 17 Aug 2016) | 3 lines
+Changed paths:
+   M /trunk/cargBags/mixins/locale.lua
+   M /trunk/cargBags/mixins-add/default.scaffold.lua
+   M /trunk/cargBags_Nivaya.lua
+   M /trunk/cargBags_Nivaya.toc
+
+small bugfix for 7.0
+
+more to come ...
+------------------------------------------------------------------------

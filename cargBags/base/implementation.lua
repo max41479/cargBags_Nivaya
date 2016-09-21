@@ -326,7 +326,7 @@ function Implementation:GetItemInfo(bagID, slotID, i)
 			end
 			local data, name = strmatch(clink, "|H(.-)|h(.-)|h")
 			local  _, _, level, rarity, _, _, _, id = strmatch(data, "(%w+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)")
-			i.type = L["Battle Pets"]
+			i.type = L.ItemClass["Battle Pets"]
 			i.rarity = tonumber(rarity) or 0
 			i.id = tonumber(id) or 0
 			i.name = name
@@ -485,7 +485,6 @@ end
 ]]
 function Implementation:PLAYERREAGENTBANKSLOTS_CHANGED(event, slotID)
 	local bagID = -3
-	print("PLAYERBANKSLOTS_CHANGED", bagID, slotID)
 
 	self:BAG_UPDATE(event, bagID, slotID)
 end

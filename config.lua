@@ -15,8 +15,13 @@ sizes = {
 		columnsSmall = 12,
 		columnsLarge = 14,
 		largeItemCount = 96,	-- Switch to columnsLarge when >= this number of items in the bank
-	},
+	},	
 },
+
+
+--------------------------------------------------------------
+-- Anything below this is only effective when not using RealUI
+--------------------------------------------------------------
 
 fonts = {
 	-- Font to use for bag captions and other strings
@@ -25,7 +30,7 @@ fonts = {
 		8, 						-- Font Size
 		"OUTLINEMONOCHROME",	-- Flags
 	},
-
+	
 	--Font to use for the dropdown menu
 	dropdown = {
 		C.media.pixel_font, 	-- Font path

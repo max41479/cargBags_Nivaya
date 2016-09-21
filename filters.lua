@@ -11,8 +11,8 @@ cB_KnownItems = cB_KnownItems or {}
 cBniv_CatInfo = {}
 cB_ItemClass = {}
 
-cB_existsBankBag = { Armor = true, Quest = true, TradeGoods = true, Consumables = true, BattlePet = true }
-cB_filterEnabled = { Armor = true, Quest = true, TradeGoods = true, Consumables = true, Keyring = true, Junk = true, Stuff = true, ItemSets = true, BattlePet = true }
+cB_existsBankBag = { Armor = true, Gem = true, Quest = true, TradeGoods = true, Consumables = true, BattlePet = true }
+cB_filterEnabled = { Armor = true, Gem = true, Quest = true, TradeGoods = true, Consumables = true, Keyring = true, Junk = true, Stuff = true, ItemSets = true, BattlePet = true }
 
 --------------------
 --Basic filters
@@ -51,12 +51,12 @@ function cbNivaya:ClassifyItem(item)
 	if tC then cB_ItemClass[item.id] = tC; return true end
 
 	-- junk
-	local _,_,tQ = GetItemInfo(item.link)
-	if (tQ == 0) then cB_ItemClass[item.id] = "Junk"; return true end
+	if (item.rarity == 0) then cB_ItemClass[item.id] = "Junk"; return true end
 
 	-- type based filters
 	if item.type then
 		if		(item.type == L.Armor) or (item.type == L.Weapon)	then cB_ItemClass[item.id] = "Armor"; return true
+		elseif	(item.type == L.Gem)								then cB_ItemClass[item.id] = "Gem"; return true
 		elseif	(item.type == L.Quest)								then cB_ItemClass[item.id] = "Quest"; return true
 		elseif	(item.type == L.Trades)								then cB_ItemClass[item.id] = "TradeGoods"; return true
 		elseif	(item.type == L.Consumables)						then cB_ItemClass[item.id] = "Consumables"; return true
@@ -77,10 +77,10 @@ function cbNivaya:getItemCount(itemName)
 		if tNumSlots > 0 then
 			for j = 1,tNumSlots do
 				local tLink = GetContainerItemLink(i,j)
-				local tName
+				local _, tName
 				if tLink then
-					if (strsub(tLink, 13, 21) == "battlepet") then
-						tName = select(2, strmatch(tLink, "|H(.-)|h(.-)|h"))
+					if tLink:find("battlepet") then
+						_, tName = strmatch(tLink, "|H(.-)|h(.-)|h")
 					else
 						tName = GetItemInfo(tLink)
 					end
@@ -100,7 +100,7 @@ cB_Filters.fNewItems = function(item)
 	if not ((item.bagID >= 0) and (item.bagID <= 4)) then return false end
 	if not item.link then return false end
 	if not cB_KnownItems[item.id] then return true end
-	local t = cbNivaya:getItemCount(item.id)
+	local t = GetItemCount(item.id)	--cbNivaya:getItemCount(item.id)
 	return (t > cB_KnownItems[item.id]) and true or false
 end
 

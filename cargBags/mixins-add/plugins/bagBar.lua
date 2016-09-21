@@ -49,55 +49,68 @@ BagButton.itemFadeAlpha = 0.2
 
 local buttonNum = 0
 function BagButton:Create(bagID)
-	buttonNum = buttonNum+1
-	local name = addon.."BagButton"..buttonNum
+    buttonNum = buttonNum+1
+    local name = addon.."BagButton"..buttonNum
 
-	local button = setmetatable(CreateFrame("CheckButton", name, nil, "ItemButtonTemplate"), self.__index)
+    local button = setmetatable(CreateFrame("CheckButton", name, nil, "ItemButtonTemplate"), self.__index)
 
-	local invID = ContainerIDToInventoryID(bagID)
-	button.invID = invID
-	button:SetID(invID)
-	button.bagID = bagID
+    local invID = ContainerIDToInventoryID(bagID)
+    button.invID = invID
+    button.bagID = bagID
+    button.isBag = 1
+    if button.bagID <= 4 then
+        -- Inventory
+        button:SetID(invID)
+        button.UpdateTooltip = BagSlotButton_OnEnter
+    elseif button.bagID >= 5 then
+        -- Bank
+        button:SetID(invID - 67) -- bank IDs don't use the actual invID
+        button.GetInventorySlot = ButtonInventorySlot
+        button.UpdateTooltip = BankFrameItemButton_OnEnter
+    end
 
-	button:RegisterForDrag("LeftButton", "RightButton")
-	button:RegisterForClicks("anyUp")
+    button:RegisterForDrag("LeftButton", "RightButton")
+    button:RegisterForClicks("anyUp")
+    button:SetCheckedTexture(self.checkedTex, "ADD")
 
-	button:SetSize(32, 32)
+    button:SetSize(32, 32)
 	button:SetHighlightTexture("")
 	button:SetPushedTexture("")
 	button:SetNormalTexture("")
 	button:SetTemplate("Transparent")
 	button:StyleButton()
 
-	button.Icon = 		_G[name.."IconTexture"]
-	button.Count = 		_G[name.."Count"]
-	button.Cooldown = 	_G[name.."Cooldown"]
-	button.Quest = 		_G[name.."IconQuestTexture"]
-	button.Border =		_G[name.."NormalTexture"]
-
+    button.Icon =       _G[name.."IconTexture"]
+    button.Count =      _G[name.."Count"]
+    button.Cooldown =   _G[name.."Cooldown"]
+    button.Quest =      _G[name.."IconQuestTexture"]
+    button.Border =     _G[name.."NormalTexture"]
+    
 	button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	button.Icon:SetPoint("TOPLEFT", 2, -2)
 	button.Icon:SetPoint("BOTTOMRIGHT", -2, 2)
 
-	cargBags.SetScriptHandlers(button, "OnClick", "OnReceiveDrag", "OnEnter", "OnLeave", "OnDragStart")
+    cargBags.SetScriptHandlers(button, "OnClick", "OnReceiveDrag", "OnEnter", "OnLeave", "OnDragStart")
 
-	if(button.OnCreate) then button:OnCreate(bagID) end
+    if(button.OnCreate) then button:OnCreate(bagID) end
 
-	return button
+    return button
 end
 
 function BagButton:Update()
-	local icon = GetInventoryItemTexture("player", self.invID)
-	self.Icon:SetTexture(icon)
+	local icon = GetInventoryItemTexture("player", (self.GetInventorySlot and self:GetInventorySlot()) or self.invID)
+	self.Icon:SetTexture(icon or self.bgTex)
 	self.Icon:SetDesaturated(IsInventoryItemLocked(self.invID))
 
 	if(self.bagID > NUM_BAG_SLOTS) then
 		if(self.bagID-NUM_BAG_SLOTS <= GetNumBankSlots()) then
 			self.Icon:SetVertexColor(1, 1, 1)
 			self.notBought = nil
+			self.tooltipText = BANK_BAG
 		else
 			self.notBought = true
 			self.Icon:SetVertexColor(1, 0, 0)
+			self.tooltipText = BANK_BAG_PURCHASE
 		end
 	end
 
@@ -123,7 +136,7 @@ function BagButton:OnEnter()
 		end
 	end
 
-	BagSlotButton_OnEnter(self)
+	self:UpdateTooltip()
 end
 
 function BagButton:OnLeave()
@@ -149,7 +162,7 @@ function BagButton:OnClick()
 		return StaticPopup_Show("CONFIRM_BUY_BANK_SLOT")
 	end
 
-	if(PutItemInBag(self.invID)) then return end
+	if(PutItemInBag((self.GetInventorySlot and self:GetInventorySlot()) or self.invID)) then return end
 
 	-- Somehow we need to disconnect this from the filter-sieve
 	local container = self.bar.container

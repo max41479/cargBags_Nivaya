@@ -1,17 +1,18 @@
-## Interface: 60000
+## Interface: 70000
 ## Title: cargBags_Nivaya: |cff1784d1Dark ShestakUI|r
 ## Author: Luzzifus (Modified by Nibelheim, humfras)
 ## RequiredDeps: DarkShestakUI
 ## OptionalDeps: ItemRack, Outfitter
 ## SavedVariables: cBnivCfg, cB_CustomBags, cBniv_CatInfo
 ## SavedVariablesPerCharacter: cB_KnownItems, cBniv
-## X-Curse-Packaged-Version: 6.0
+## X-Curse-Packaged-Version: 7.0.3 r43
 ## X-Curse-Project-Name: cargBags Nivaya (RealUI/standalone)
 ## X-Curse-Project-ID: cargbags-nivaya-mop-update
 ## X-Curse-Repository-ID: wow/cargbags-nivaya-mop-update/mainline
 
 config.lua
 
+libs\LibItemUpgradeInfo-1.0\LibItemUpgradeInfo-1.0.xml
 cargBags\embed.xml
 localization.lua
 filters.lua
