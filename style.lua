@@ -31,7 +31,7 @@ local cbNivaya = cargBags:GetImplementation("Nivaya")
 local MyContainer = cbNivaya:GetContainerClass()
 
 local function GetClassColor(class)
-	local r, g, b = unpack(C.skins.color_theme)
+	local r, g, b = unpack(C.media.border_color)
 	return {r, g, b}
 end
 
