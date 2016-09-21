@@ -734,8 +734,9 @@ function MyContainer:OnCreate(name, settings)
 		self.hint:SetFont(unpack(font))
 		self.hint:SetTextColor(1, 1, 1, 0.4)
 		self.hint:SetText("Ctrl + Alt + Right Click an item to assign category")
+		self.hint:SetWidth(self:GetWidth())
 		self.hintShown = true
-		
+
 		-- The money display
 		-- local money = self:SpawnPlugin("TagDisplay", "[money]", self)
 		-- money:SetPoint("TOPRIGHT", self, -25.5, -2.5)
